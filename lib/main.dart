@@ -22,12 +22,21 @@ class _MyAppState extends State<MyApp> {
         title: Text('Simulação'),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(10),
+        padding: const EdgeInsets.all(20),
         child: Center(
           child: Column(
             children: <Widget>[
               RaisedButton(
-                child: Text('Nova simulação'),
+                color: Colors.grey,
+                child: Container(
+                    width: double.infinity,
+                    height: 50,
+                    child: Center(
+                      child: Text(
+                        'Nova simulação',
+                        style: TextStyle(color: Colors.white, fontSize: 20),
+                      ),
+                    )),
                 onPressed: () {
                   Navigator.push(
                     context,
@@ -38,9 +47,21 @@ class _MyAppState extends State<MyApp> {
               SizedBox(
                 height: 20,
               ),
-              RaisedButton(
-                child: Text('Visualizar propostas aceitas'),
+              OutlineButton(
+                child: Container(
+                    width: double.infinity,
+                    height: 50,
+                    child: Center(
+                        child: Text(
+                      'Visualizar propostas aceitas',
+                      style: TextStyle(color: Colors.grey, fontSize: 20),
+                    ))),
                 onPressed: () {},
+                borderSide: BorderSide(
+                  color: Colors.grey, //Color of the border
+                  style: BorderStyle.solid, //Style of the border
+                  width: 2, //width of the border
+                ),
               ),
               SizedBox(
                 height: 20,

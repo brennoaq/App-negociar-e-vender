@@ -3,6 +3,7 @@ import 'package:negociar_e_vender/values.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 
 import 'db_helper.dart';
+import 'nova_simulacao3.dart';
 
 class Nova_simulacao2 extends StatefulWidget {
   String ramo;
@@ -256,7 +257,12 @@ class _State extends State<Nova_simulacao2> {
                   ),
                 ),
               ),
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Nova_simulacao3(value)),
+                );
+              },
             )
           ],
         ),
