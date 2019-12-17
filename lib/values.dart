@@ -1,5 +1,3 @@
-import 'dart:math';
-
 const ramos_atividade = [
   'Clínicas, laboratórios e serviços de saúde',
   'Companhias aéreas',
@@ -24,7 +22,7 @@ const ramos_atividade = [
   'Supermercados',
   'Varejistas'
 ];
-const _concorrentes = [
+const concorrentes = [
   'SumUp',
   'Mercado Pago',
   'Pop Credicard',
@@ -34,3 +32,17 @@ const _concorrentes = [
   'Stelo',
   'iZettle'
 ];
+
+class Concorrente {
+
+  String name;
+  double credito;
+  double debito;
+
+  Concorrente(Map<String, dynamic> map) {
+    this.name = map['name'];
+    this.credito = map['credito'];
+    this.debito = map['debito'];
+  }
+
+}

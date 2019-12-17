@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:negociar_e_vender/nova_simulacao2.dart';
 import 'package:negociar_e_vender/values.dart';
 
+
 import 'db_helper.dart';
 
 class Nova_simulacao extends StatefulWidget {
@@ -154,7 +155,7 @@ class _State extends State<Nova_simulacao> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => Nova_simulacao2(ramo: value)),
+                      builder: (context) => Nova_simulacao2()),
                 );
               },
             )

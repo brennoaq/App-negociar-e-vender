@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 import 'package:negociar_e_vender/values.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
@@ -9,9 +10,12 @@ class DatabaseHelper {
   static final _databaseVersion = 1;
 
   static final table = 'ramos';
+  static final tableTaxas = 'taxas';
 
   static final columnId = 'id';
   static final columnName = 'name';
+  static final columnDebito = 'debito';
+  static final columnCredito = 'credito';
 
   DatabaseHelper._privateConstructor();
 
@@ -39,11 +43,24 @@ class DatabaseHelper {
             $columnName VARCHAR(255) NOT NULL
           )
           ''');
-    await populateRamos();
+    await db.execute('''
+          CREATE TABLE $tableTaxas (
+            $columnId INTEGER PRIMARY KEY AUTOINCREMENT,
+            $columnName VARCHAR(255) NOT NULL,
+            $columnDebito REAL NOT NULL,
+            $columnCredito REAL NOT NULL
+          )
+          ''');
+
+    await _populateRamos(db);
+    await _populateTaxas(db);
+
   }
 
-  Future<int> insert(String table, Map<String, dynamic> row) async {
-    Database db = await instance.database;
+  Future<int> insert(String table, Map<String, dynamic> row, {Database db}) async {
+    if (db == null) {
+      db = await instance.database;
+    }
     return await db.insert(table, row);
   }
 
@@ -52,9 +69,26 @@ class DatabaseHelper {
     return await db.query(table);
   }
 
-  populateRamos() async {
+  _populateRamos(Database db) async {
     for (final i in ramos_atividade) {
-      await insert(table, {'name': i});
+      await insert(table, {'name': i}, db: db);
     }
+  }
+
+  _populateTaxas(Database db) async {
+    for (final i in concorrentes) {
+      final random = Random();
+      final credito = 2.8 + random.nextDouble() * 0.5;
+      final debito = 1.8 + random.nextDouble() * 0.5;
+      await insert(tableTaxas, {'name': i, 'credito': credito, 'debito': debito}, db: db);
+    }
+  }
+
+  Future deleteDatabaseByPath() async{
+    _database?.close();
+    _database = null;
+    Directory documentsDirectory = await getApplicationDocumentsDirectory();
+    String path = join(documentsDirectory.path, _databaseName);
+    await deleteDatabase(path);
   }
 }

@@ -1,38 +1,44 @@
 import 'package:flutter/material.dart';
 import 'package:negociar_e_vender/values.dart';
 
+import 'db_helper.dart';
+
 class Nova_simulacao2 extends StatefulWidget {
-
-  String ramo;
-
-  Nova_simulacao2({@required this.ramo});
-
   @override
-  _State createState() => _State(ramo);
+  _State createState() => _State();
 }
 
 class _State extends State<Nova_simulacao2> {
-  static const _itens_text = ['Burguer king', 'MC Donalds', 'Bobs', 'Subway'];
-
   TextEditingController controller_debito_concorrente;
   TextEditingController controller_credito_concorrente;
 
   String value;
-  String ramo;
 
-  _State(this.ramo);
+  Future<Map<String, Concorrente>> concorrentes;
+
+  _State();
 
   @override
   void initState() {
     controller_debito_concorrente = TextEditingController();
     controller_credito_concorrente = TextEditingController();
 
-//    controller_debito_concorrente.text = taxas[ramo].debito.toStringAsPrecision(3);
-//    controller_credito_concorrente.text = taxas[ramo].credito.toStringAsPrecision(3);
-
-    value = _itens_text[0];
+    concorrentes = getConcorrentes();
 
     super.initState();
+  }
+
+  Future<Map<String, Concorrente>> getConcorrentes() async {
+    final dbHelper = DatabaseHelper.instance;
+    final list = await dbHelper.queryAllRows(DatabaseHelper.tableTaxas);
+    final map = Map<String, Concorrente>();
+    list.forEach((item) {
+      map[item['name']] = Concorrente(item);
+    });
+
+    value = map.keys.first;
+
+    return map;
   }
 
   @override
@@ -67,19 +73,31 @@ class _State extends State<Nova_simulacao2> {
                       height: 20,
                     ),
                     Text('Concorrente *'),
-                    DropdownButton(
-                      isExpanded: true,
-                      value: value,
-                      items: List<DropdownMenuItem>.generate(
-                          _itens_text.length,
-                          (index) => DropdownMenuItem(
-                                child: Text(_itens_text[index]),
-                                value: _itens_text[index],
-                              )),
-                      onChanged: (value) {
-                        setState(() {
-                          this.value = value;
-                        });
+                    FutureBuilder(
+                      future: concorrentes,
+                      builder: (context, snapshot) {
+                        if (snapshot.hasError) {
+                          print(snapshot.error);
+                          return Text("lista com erro");
+                        } else if (!snapshot.hasData) {
+                          return Center(child: CircularProgressIndicator());
+                        } else {
+                          return DropdownButton(
+                            isExpanded: true,
+                            value: value,
+                            items: List<DropdownMenuItem>.generate(
+                                snapshot.data.length,
+                                (index) => DropdownMenuItem(
+                                      child: Text(snapshot.data.keys.toList()[index]),
+                                      value: snapshot.data.keys.toList()[index],
+                                    )),
+                            onChanged: (value) {
+                              setState(() {
+                                this.value = value;
+                              });
+                            },
+                          );
+                        }
                       },
                     ),
                     SizedBox(
@@ -93,15 +111,32 @@ class _State extends State<Nova_simulacao2> {
                     Row(
                       children: <Widget>[
                         Expanded(
-                          child: TextField(
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(),
-                              labelText: 'Taxa do concorrente *',
-                              labelStyle: TextStyle(fontSize: 13),
-                            ),
-                            keyboardType:
-                                TextInputType.numberWithOptions(decimal: true),
-                            controller: controller_debito_concorrente,
+                          child: FutureBuilder(
+                            future: concorrentes,
+                            builder: (context, snapshot) {
+                              if (snapshot.hasError) {
+                                print(snapshot.error);
+                                return Text("lista com erro");
+                              } else if (!snapshot.hasData) {
+                                return Center(
+                                    child: CircularProgressIndicator());
+                              } else {
+                                return TextField(
+                                  decoration: InputDecoration(
+                                    border: OutlineInputBorder(),
+                                    labelText: 'Taxa do concorrente *',
+                                    labelStyle: TextStyle(fontSize: 13),
+                                  ),
+                                  keyboardType: TextInputType.numberWithOptions(
+                                      decimal: true),
+                                  controller: controller_debito_concorrente
+                                    ..text =
+                                        (snapshot.data[value].debito as double)
+                                            .toStringAsPrecision(3),
+                                  enabled: false,
+                                );
+                              }
+                            },
                           ),
                         ),
                         SizedBox(
@@ -130,14 +165,31 @@ class _State extends State<Nova_simulacao2> {
                     Row(
                       children: <Widget>[
                         Expanded(
-                          child: TextField(
-                            decoration: InputDecoration(
-                                border: OutlineInputBorder(),
-                                labelText: 'Taxa do concorrente *',
-                                labelStyle: TextStyle(fontSize: 13)),
-                            keyboardType:
-                                TextInputType.numberWithOptions(decimal: true),
-                            controller: controller_credito_concorrente,
+                          child: FutureBuilder(
+                            future: concorrentes,
+                            builder: (context, snapshot) {
+                              if (snapshot.hasError) {
+                                print(snapshot.error);
+                                return Text("lista com erro");
+                              } else if (!snapshot.hasData) {
+                                return Center(
+                                    child: CircularProgressIndicator());
+                              } else {
+                                return TextField(
+                                  decoration: InputDecoration(
+                                      border: OutlineInputBorder(),
+                                      labelText: 'Taxa do concorrente *',
+                                      labelStyle: TextStyle(fontSize: 13)),
+                                  keyboardType: TextInputType.numberWithOptions(
+                                      decimal: true),
+                                  controller: controller_credito_concorrente
+                                    ..text =
+                                        (snapshot.data[value].credito as double)
+                                            .toStringAsPrecision(3),
+                                  enabled: false,
+                                );
+                              }
+                            },
                           ),
                         ),
                         SizedBox(
