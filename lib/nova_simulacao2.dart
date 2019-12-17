@@ -1,39 +1,54 @@
 import 'package:flutter/material.dart';
 import 'package:negociar_e_vender/values.dart';
+import 'package:flutter_masked_text/flutter_masked_text.dart';
 
 import 'db_helper.dart';
 
 class Nova_simulacao2 extends StatefulWidget {
+  String ramo;
+
+  Nova_simulacao2(this.ramo);
+
   @override
-  _State createState() => _State();
+  _State createState() => _State(ramo);
 }
 
 class _State extends State<Nova_simulacao2> {
-  TextEditingController controller_debito_concorrente;
-  TextEditingController controller_credito_concorrente;
+  MoneyMaskedTextController controller_debito_concorrente;
+  MoneyMaskedTextController controller_credito_concorrente;
+  MoneyMaskedTextController controller_debito_oferecido;
+  MoneyMaskedTextController controller_credito_oferecido;
 
   String value;
+  String ramo;
 
-  Future<Map<String, Concorrente>> concorrentes;
+  Future<Map<String, Map<String, Concorrente>>> concorrentes;
 
-  _State();
+  _State(this.ramo);
 
   @override
   void initState() {
-    controller_debito_concorrente = TextEditingController();
-    controller_credito_concorrente = TextEditingController();
+    controller_debito_concorrente = MoneyMaskedTextController(
+        rightSymbol: '%', decimalSeparator: '.', thousandSeparator: '');
+    controller_credito_concorrente = MoneyMaskedTextController(
+        rightSymbol: '%', decimalSeparator: '.', thousandSeparator: '');
+    controller_debito_oferecido = MoneyMaskedTextController(
+        rightSymbol: '%', decimalSeparator: '.', thousandSeparator: '');
+    controller_credito_oferecido = MoneyMaskedTextController(
+        rightSymbol: '%', decimalSeparator: '.', thousandSeparator: '');
 
     concorrentes = getConcorrentes();
 
     super.initState();
   }
 
-  Future<Map<String, Concorrente>> getConcorrentes() async {
+  Future<Map<String, Map<String, Concorrente>>> getConcorrentes() async {
     final dbHelper = DatabaseHelper.instance;
     final list = await dbHelper.queryAllRows(DatabaseHelper.tableTaxas);
-    final map = Map<String, Concorrente>();
+    final map = Map<String, Map<String, Concorrente>>();
     list.forEach((item) {
-      map[item['name']] = Concorrente(item);
+      map[item['name']] = (map[item['name']] ?? Map<String, Concorrente>())
+        ..[item['ramo']] = Concorrente(item);
     });
 
     value = map.keys.first;
@@ -45,6 +60,8 @@ class _State extends State<Nova_simulacao2> {
   void dispose() {
     controller_debito_concorrente.dispose();
     controller_credito_concorrente.dispose();
+    controller_debito_oferecido.dispose();
+    controller_credito_oferecido.dispose();
     super.dispose();
   }
 
@@ -88,7 +105,8 @@ class _State extends State<Nova_simulacao2> {
                             items: List<DropdownMenuItem>.generate(
                                 snapshot.data.length,
                                 (index) => DropdownMenuItem(
-                                      child: Text(snapshot.data.keys.toList()[index]),
+                                      child: Text(
+                                          snapshot.data.keys.toList()[index]),
                                       value: snapshot.data.keys.toList()[index],
                                     )),
                             onChanged: (value) {
@@ -130,9 +148,8 @@ class _State extends State<Nova_simulacao2> {
                                   keyboardType: TextInputType.numberWithOptions(
                                       decimal: true),
                                   controller: controller_debito_concorrente
-                                    ..text =
-                                        (snapshot.data[value].debito as double)
-                                            .toStringAsPrecision(3),
+                                    ..updateValue(
+                                        snapshot.data[value][ramo].debito),
                                   enabled: false,
                                 );
                               }
@@ -150,6 +167,7 @@ class _State extends State<Nova_simulacao2> {
                                 labelStyle: TextStyle(fontSize: 13)),
                             keyboardType:
                                 TextInputType.numberWithOptions(decimal: true),
+                            controller: controller_debito_oferecido,
                           ),
                         ),
                       ],
@@ -183,9 +201,8 @@ class _State extends State<Nova_simulacao2> {
                                   keyboardType: TextInputType.numberWithOptions(
                                       decimal: true),
                                   controller: controller_credito_concorrente
-                                    ..text =
-                                        (snapshot.data[value].credito as double)
-                                            .toStringAsPrecision(3),
+                                    ..updateValue(
+                                        snapshot.data[value][ramo].credito),
                                   enabled: false,
                                 );
                               }
@@ -203,6 +220,7 @@ class _State extends State<Nova_simulacao2> {
                                 labelStyle: TextStyle(fontSize: 13)),
                             keyboardType:
                                 TextInputType.numberWithOptions(decimal: true),
+                            controller: controller_credito_oferecido,
                           ),
                         ),
                       ],

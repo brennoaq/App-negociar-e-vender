@@ -36,13 +36,19 @@ const concorrentes = [
 class Concorrente {
 
   String name;
+  String ramo;
   double credito;
   double debito;
+  double minCredito;
+  double minDebito;
 
   Concorrente(Map<String, dynamic> map) {
     this.name = map['name'];
+    this.ramo = map['ramo'];
     this.credito = map['credito'];
     this.debito = map['debito'];
+    this.minCredito = map['minCredito'];
+    this.minDebito = map['minDebito'];
   }
 
 }

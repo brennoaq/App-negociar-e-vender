@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:negociar_e_vender/nova_simulacao2.dart';
 import 'package:negociar_e_vender/values.dart';
-
+import 'package:flutter_masked_text/flutter_masked_text.dart';
 
 import 'db_helper.dart';
 
@@ -13,11 +13,21 @@ class Nova_simulacao extends StatefulWidget {
 class _State extends State<Nova_simulacao> {
   String value;
   Future<List<String>> ramos;
+  MaskedTextController controllerCPF, controllerPHONE;
 
   @override
   void initState() {
     ramos = _getRamos();
+    controllerCPF = MaskedTextController(mask: '000.000.000-00');
+    controllerPHONE = MaskedTextController(mask: '(00) 00000-0000');
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    controllerCPF.dispose();
+    controllerPHONE.dispose();
+    super.dispose();
   }
 
   Future<List<String>> _getRamos() async {
@@ -63,6 +73,7 @@ class _State extends State<Nova_simulacao> {
                               labelText: 'CPF *',
                             ),
                             keyboardType: TextInputType.number,
+                            controller: controllerCPF,
                           ),
                         ),
                         SizedBox(
@@ -75,6 +86,7 @@ class _State extends State<Nova_simulacao> {
                               labelText: 'Telefone *',
                             ),
                             keyboardType: TextInputType.phone,
+                            controller: controllerPHONE,
                           ),
                         ),
                       ],
@@ -154,8 +166,7 @@ class _State extends State<Nova_simulacao> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                      builder: (context) => Nova_simulacao2()),
+                  MaterialPageRoute(builder: (context) => Nova_simulacao2(value)),
                 );
               },
             )

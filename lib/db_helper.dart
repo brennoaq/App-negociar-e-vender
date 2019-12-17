@@ -14,8 +14,11 @@ class DatabaseHelper {
 
   static final columnId = 'id';
   static final columnName = 'name';
+  static final columnRamo = 'ramo';
   static final columnDebito = 'debito';
   static final columnCredito = 'credito';
+  static final columnMinDebito = 'minDebito';
+  static final columnMinCredito = 'minCredito';
 
   DatabaseHelper._privateConstructor();
 
@@ -47,17 +50,20 @@ class DatabaseHelper {
           CREATE TABLE $tableTaxas (
             $columnId INTEGER PRIMARY KEY AUTOINCREMENT,
             $columnName VARCHAR(255) NOT NULL,
+            $columnRamo VARCHAR(255) NOT NULL,
             $columnDebito REAL NOT NULL,
-            $columnCredito REAL NOT NULL
+            $columnCredito REAL NOT NULL,
+            $columnMinCredito REAL NOT NULL,
+            $columnMinDebito REAL NOT NULL
           )
           ''');
 
     await _populateRamos(db);
     await _populateTaxas(db);
-
   }
 
-  Future<int> insert(String table, Map<String, dynamic> row, {Database db}) async {
+  Future<int> insert(String table, Map<String, dynamic> row,
+      {Database db}) async {
     if (db == null) {
       db = await instance.database;
     }
@@ -77,14 +83,28 @@ class DatabaseHelper {
 
   _populateTaxas(Database db) async {
     for (final i in concorrentes) {
-      final random = Random();
-      final credito = 2.8 + random.nextDouble() * 0.5;
-      final debito = 1.8 + random.nextDouble() * 0.5;
-      await insert(tableTaxas, {'name': i, 'credito': credito, 'debito': debito}, db: db);
+      for (final u in ramos_atividade) {
+        final random = Random();
+        final credito = 2.8 + random.nextDouble() * 0.5;
+        final debito = 1.8 + random.nextDouble() * 0.5;
+        final minCredito = credito - random.nextDouble();
+        final minDebito = debito - random.nextDouble();
+        await insert(
+            tableTaxas,
+            {
+              'name': i,
+              'ramo': u,
+              'credito': credito,
+              'debito': debito,
+              'minCredito': minCredito,
+              'minDebito': minDebito
+            },
+            db: db);
+      }
     }
   }
 
-  Future deleteDatabaseByPath() async{
+  Future deleteDatabaseByPath() async {
     _database?.close();
     _database = null;
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
