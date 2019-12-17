@@ -6,18 +6,37 @@ import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'db_helper.dart';
 
 class Nova_simulacao3 extends StatefulWidget {
-  String ramo;
+  double debito;
+  double credito;
+  double descontoDebito;
+  double descontoCredito;
+  double minDebito;
+  double minCredito;
 
-  Nova_simulacao3(this.ramo);
+  Nova_simulacao3({
+    @required this.debito,
+    @required this.credito,
+    @required this.descontoDebito,
+    @required this.descontoCredito,
+    @required this.minDebito,
+    @required this.minCredito,
+  });
 
   @override
-  _State createState() => _State(ramo);
+  _State createState() => _State(
+      debito, credito, descontoDebito, descontoCredito, minDebito, minCredito);
 }
 
 class _State extends State<Nova_simulacao3> {
-  String ramo;
+  double debito;
+  double credito;
+  double descontoDebito;
+  double descontoCredito;
+  double minDebito;
+  double minCredito;
 
-  _State(this.ramo);
+  _State(this.debito, this.credito, this.descontoDebito, this.descontoCredito,
+      this.minDebito, this.minCredito);
 
   @override
   Widget build(BuildContext context) {
@@ -87,13 +106,16 @@ class _State extends State<Nova_simulacao3> {
                         ),
                         Expanded(
                           flex: 3,
-                          child: Text('3,5%'),
+                          child: Text('${debito.toStringAsPrecision(3)}%'),
                         ),
                         Expanded(
                           flex: 3,
                           child: Text(
-                            '2,5%',
-                            style: TextStyle(color: Colors.green),
+                            '${descontoDebito.toStringAsPrecision(3)}%',
+                            style: TextStyle(
+                                color: descontoDebito >= minDebito
+                                    ? Colors.green
+                                    : Colors.red),
                           ),
                         ),
                       ],
@@ -110,65 +132,112 @@ class _State extends State<Nova_simulacao3> {
                         ),
                         Expanded(
                           flex: 3,
-                          child: Text('4,5%'),
+                          child: Text('${credito.toStringAsPrecision(3)}%'),
                         ),
                         Expanded(
                           flex: 3,
                           child: Text(
-                            '4,21%',
-                            style: TextStyle(color: Colors.green),
+                            '${descontoCredito.toStringAsPrecision(3)}%',
+                            style: TextStyle(
+                                color: descontoCredito >= minCredito
+                                    ? Colors.green
+                                    : Colors.red),
                           ),
                         ),
                       ],
                     ),
+                    getTextMin()
                   ],
                 ),
               ),
             ),
-            GestureDetector(
-              child: Container(
-                width: double.infinity,
-                height: 50,
-                color: Colors.grey,
-                child: Center(
-                  child: Text(
-                    'Proposta aceita',
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20),
-                  ),
-                ),
-              ),
-              onTap: () {
-                AlertDialogAceitarProposta(context);
-              },
-            ),
-            GestureDetector(
-              child: Container(
-                width: double.infinity,
-                height: 50,
-                color: Colors.white,
-                child: Center(
-                  child: Text(
-                    'Recusar',
-                    style: TextStyle(
-                        color: Colors.grey,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20),
-                  ),
-                ),
-              ),
-              onTap: () {},
-            ),
+            getButtonsMin(),
           ],
         ),
       ),
     );
   }
+
+  Widget getTextMin() {
+    if (descontoDebito < minDebito || descontoCredito < minCredito) {
+      return Padding(
+        padding: const EdgeInsets.only(top: 20),
+        child: Text(
+            'O valor de taxa mínima para débito é ${minDebito.toStringAsPrecision(3)}%, enquanto para crédito é ${minCredito.toStringAsPrecision(3)}%.'),
+      );
+    } else {
+      return Container();
+    }
+  }
+
+  Widget getButtonsMin() {
+    if (descontoDebito < minDebito || descontoCredito < minCredito) {
+      return GestureDetector(
+        child: Container(
+          width: double.infinity,
+          height: 50,
+          color: Colors.grey,
+          child: Center(
+            child: Text(
+              'Reajustar',
+              style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20),
+            ),
+          ),
+        ),
+        onTap: () {
+          Navigator.of(context).pop();
+        },
+      );
+    }
+    return Column(
+      children: <Widget>[
+        GestureDetector(
+          child: Container(
+            width: double.infinity,
+            height: 50,
+            color: Colors.grey,
+            child: Center(
+              child: Text(
+                'Proposta aceita',
+                style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20),
+              ),
+            ),
+          ),
+          onTap: () {
+            AlertDialogAceitarProposta(context, "Aceite do cliente", "Resposta gravada no banco de dados!");
+          },
+        ),
+        GestureDetector(
+          child: Container(
+            width: double.infinity,
+            height: 50,
+            color: Colors.white,
+            child: Center(
+              child: Text(
+                'Recusar',
+                style: TextStyle(
+                    color: Colors.grey,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20),
+              ),
+            ),
+          ),
+          onTap: () {
+            AlertDialogAceitarProposta(context, "Recusado", "A proposta foi recusada!");
+          },
+        ),
+      ],
+    );
+  }
 }
 
-AlertDialogAceitarProposta(context) {
+AlertDialogAceitarProposta(context, title, message) {
   // configura o button
   Widget HomeButton = FlatButton(
     child: Text(
@@ -184,11 +253,11 @@ AlertDialogAceitarProposta(context) {
   // configura o  AlertDialog
   AlertDialog alerta = AlertDialog(
     title: Text(
-      "Aceite do cliente",
+      title,
       style: TextStyle(
           color: Colors.black, fontWeight: FontWeight.bold, fontSize: 20),
     ),
-    content: Text("Resposta gravada no banco de dados!"),
+    content: Text(message),
     actions: [
       HomeButton,
     ],
@@ -200,5 +269,6 @@ AlertDialogAceitarProposta(context) {
     builder: (BuildContext context) {
       return alerta;
     },
+    barrierDismissible: false,
   );
 }

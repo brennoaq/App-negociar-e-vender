@@ -230,40 +230,75 @@ class _State extends State<Nova_simulacao2> {
                 ),
               ),
             ),
-            GestureDetector(
-              child: Container(
-                height: 50,
-                color: Colors.grey,
-                child: Padding(
-                  padding: const EdgeInsets.all(15),
-                  child: Stack(
-                    children: <Widget>[
-                      Align(
-                        child: Text(
-                          'Simular',
-                          style: TextStyle(color: Colors.white, fontSize: 20),
+            FutureBuilder(
+              future: concorrentes,
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  print(snapshot.error);
+                  return Text("lista com erro");
+                } else if (!snapshot.hasData) {
+                  return Center(child: CircularProgressIndicator());
+                } else {
+                  return GestureDetector(
+                    child: Container(
+                      height: 50,
+                      color: Colors.grey,
+                      child: Padding(
+                        padding: const EdgeInsets.all(15),
+                        child: Stack(
+                          children: <Widget>[
+                            Align(
+                              child: Text(
+                                'Simular',
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 20),
+                              ),
+                              alignment: Alignment.center,
+                            ),
+                            Align(
+                              child: Icon(
+                                Icons.arrow_forward_ios,
+                                size: 20,
+                                color: Colors.white,
+                              ),
+                              alignment: Alignment.centerRight,
+                            )
+                          ],
                         ),
-                        alignment: Alignment.center,
                       ),
-                      Align(
-                        child: Icon(
-                          Icons.arrow_forward_ios,
-                          size: 20,
-                          color: Colors.white,
-                        ),
-                        alignment: Alignment.centerRight,
-                      )
-                    ],
-                  ),
-                ),
-              ),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Nova_simulacao3(value)),
-                );
+                    ),
+                    onTap: () {
+                      double debito = controller_debito_concorrente.numberValue;
+                      double credito =
+                          controller_credito_concorrente.numberValue;
+                      double descontoDebito = debito -
+                          controller_debito_oferecido.numberValue /
+                              100 *
+                              debito;
+                      double descontoCredito = credito -
+                          controller_credito_oferecido.numberValue /
+                              100 *
+                              credito;
+                      double minDebito = snapshot.data[value][ramo].minDebito;
+                      double minCredito = snapshot.data[value][ramo].minCredito;
+
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => Nova_simulacao3(
+                                  debito: debito,
+                                  credito: credito,
+                                  descontoDebito: descontoDebito,
+                                  descontoCredito: descontoCredito,
+                                  minDebito: minDebito,
+                                  minCredito: minCredito,
+                                )),
+                      );
+                    },
+                  );
+                }
               },
-            )
+            ),
           ],
         ),
       ),
