@@ -1,7 +1,12 @@
+import 'dart:io';
+
+import 'package:csv/csv.dart';
 import 'package:flutter/material.dart';
 import 'package:negociar_e_vender/db_helper.dart';
-import 'package:negociar_e_vender/lista_propostas.dart';
 import 'package:negociar_e_vender/nova_simulacao.dart';
+import 'package:open_file/open_file.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 void main() {
   runApp(MaterialApp(home: SafeArea(child: MyApp())));
@@ -61,10 +66,7 @@ class _MyAppState extends State<MyApp> {
                       style: TextStyle(color: Colors.grey, fontSize: 20),
                     ))),
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => Lista_propostas()),
-                  );
+                  _getCSV();
                 },
                 borderSide: BorderSide(
                   color: Colors.grey, //Color of the border
@@ -94,5 +96,64 @@ class _MyAppState extends State<MyApp> {
   _displaySnackBar(BuildContext context, String message) {
     final snackBar = SnackBar(content: Text(message));
     _scaffoldKey.currentState.showSnackBar(snackBar);
+  }
+
+  _getCSV() async {
+    final db = DatabaseHelper.instance;
+    final list = await db.queryAllRows(DatabaseHelper.tablePropostas);
+    final csvList = List<List<dynamic>>();
+    csvList.add([
+      'id',
+      'cpf',
+      'email',
+      'phone',
+      'ramo',
+      'data',
+      'concorrente',
+      'taxa de debito concorrente',
+      'taxa de credito concorrente',
+      'porcentagem de desconto debito em (%)',
+      'porcentagem de desconto credito em (%)',
+      'taxa final debito',
+      'taxa final credito'
+    ]);
+    final itensList = list.map((item) {
+      final sublist = List<dynamic>();
+      sublist.add(item['id']);
+      sublist.add(item['cpf']);
+      sublist.add(item['email']);
+      sublist.add(item['phone']);
+      sublist.add(item['ramo']);
+      final date = DateTime.fromMicrosecondsSinceEpoch(int.parse(item['timestamp']));
+      sublist.add(date.toString());
+      sublist.add(item['concorrente']);
+      sublist.add(item['taxa_concorrente_debito']);
+      sublist.add(item['taxa_concorrente_credito']);
+      sublist.add(item['desconto_debito']);
+      sublist.add(item['desconto_credito']);
+      sublist.add(item['taxa_final_debito']);
+      sublist.add(item['taxa_final_credito']);
+      return sublist;
+    }).toList();
+
+    csvList.addAll(itensList);
+
+    String csv = const ListToCsvConverter().convert(csvList);
+
+    Map<PermissionGroup, PermissionStatus> permissions =
+        await PermissionHandler().requestPermissions([PermissionGroup.storage]);
+    if (permissions[PermissionGroup.storage] == PermissionStatus.granted) {
+      String dir = (await (Platform.isAndroid
+                  ? getExternalStorageDirectory()
+                  : getApplicationDocumentsDirectory()))
+              .absolute
+              .path +
+          "/";
+      final file = "$dir";
+      File f = new File(file + "propostasaceita.csv");
+      f.writeAsString(csv);
+      OpenFile.open(f.absolute.path);
+
+    }
   }
 }
