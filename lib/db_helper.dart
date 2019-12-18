@@ -56,7 +56,7 @@ class DatabaseHelper {
     await db.execute('''
           CREATE TABLE $table (
             $columnId INTEGER PRIMARY KEY AUTOINCREMENT,
-            $columnName VARCHAR(255) NOT NULL,
+            $columnName VARCHAR(255) NOT NULL
           )
           ''');
     await db.execute('''
@@ -67,7 +67,7 @@ class DatabaseHelper {
             $columnDebito REAL NOT NULL,
             $columnCredito REAL NOT NULL,
             $columnMinCredito REAL NOT NULL,
-            $columnMinDebito REAL NOT NULL,
+            $columnMinDebito REAL NOT NULL
           )
           ''');
     await db.execute('''
@@ -84,7 +84,7 @@ class DatabaseHelper {
             $columnDescontoDebito REAL NOT NULL,
             $columnDescontoCredito REAL NOT NULL,
             $columnTaxaFinalDebito REAL NOT NULL,
-            $columnTaxaFinalCredito REAL NOT NULL,
+            $columnTaxaFinalCredito REAL NOT NULL
           )
           ''');
 
