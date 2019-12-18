@@ -78,155 +78,157 @@ class _State extends State<Nova_simulacao2> {
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.all(10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      'Informações de taxa',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                    ),
-                    Text('Os campos obrigatórios estão sinalizados com *'),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Text('Concorrente *'),
-                    FutureBuilder(
-                      future: concorrentes,
-                      builder: (context, snapshot) {
-                        if (snapshot.hasError) {
-                          print(snapshot.error);
-                          return Text("lista com erro");
-                        } else if (!snapshot.hasData) {
-                          return Center(child: CircularProgressIndicator());
-                        } else {
-                          return DropdownButton(
-                            isExpanded: true,
-                            value: value,
-                            items: List<DropdownMenuItem>.generate(
-                                snapshot.data.length,
-                                (index) => DropdownMenuItem(
-                                      child: Text(
-                                          snapshot.data.keys.toList()[index]),
-                                      value: snapshot.data.keys.toList()[index],
-                                    )),
-                            onChanged: (value) {
-                              setState(() {
-                                this.value = value;
-                              });
-                            },
-                          );
-                        }
-                      },
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Text(
-                      'Débito',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                    ),
-                    Row(
-                      children: <Widget>[
-                        Expanded(
-                          child: FutureBuilder(
-                            future: concorrentes,
-                            builder: (context, snapshot) {
-                              if (snapshot.hasError) {
-                                print(snapshot.error);
-                                return Text("lista com erro");
-                              } else if (!snapshot.hasData) {
-                                return Center(
-                                    child: CircularProgressIndicator());
-                              } else {
-                                return TextField(
-                                  decoration: InputDecoration(
-                                    border: OutlineInputBorder(),
-                                    labelText: 'Taxa do concorrente *',
-                                    labelStyle: TextStyle(fontSize: 13),
-                                  ),
-                                  keyboardType: TextInputType.numberWithOptions(
-                                      decimal: true),
-                                  controller: controller_debito_concorrente
-                                    ..updateValue(
-                                        snapshot.data[value][ramo].debito),
-                                  enabled: false,
-                                );
-                              }
-                            },
-                          ),
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Expanded(
-                          child: TextField(
-                            decoration: InputDecoration(
-                                border: OutlineInputBorder(),
-                                labelText: 'Desconto oferecido *',
-                                labelStyle: TextStyle(fontSize: 13)),
-                            keyboardType:
-                                TextInputType.numberWithOptions(decimal: true),
-                            controller: controller_debito_oferecido,
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Text(
-                      'Crédito',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                    ),
-                    Row(
-                      children: <Widget>[
-                        Expanded(
-                          child: FutureBuilder(
-                            future: concorrentes,
-                            builder: (context, snapshot) {
-                              if (snapshot.hasError) {
-                                print(snapshot.error);
-                                return Text("lista com erro");
-                              } else if (!snapshot.hasData) {
-                                return Center(
-                                    child: CircularProgressIndicator());
-                              } else {
-                                return TextField(
-                                  decoration: InputDecoration(
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        'Informações de taxa',
+                        style:
+                            TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                      ),
+                      Text('Os campos obrigatórios estão sinalizados com *'),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Text('Concorrente *'),
+                      FutureBuilder(
+                        future: concorrentes,
+                        builder: (context, snapshot) {
+                          if (snapshot.hasError) {
+                            print(snapshot.error);
+                            return Text("lista com erro");
+                          } else if (!snapshot.hasData) {
+                            return Center(child: CircularProgressIndicator());
+                          } else {
+                            return DropdownButton(
+                              isExpanded: true,
+                              value: value,
+                              items: List<DropdownMenuItem>.generate(
+                                  snapshot.data.length,
+                                  (index) => DropdownMenuItem(
+                                        child: Text(
+                                            snapshot.data.keys.toList()[index]),
+                                        value: snapshot.data.keys.toList()[index],
+                                      )),
+                              onChanged: (value) {
+                                setState(() {
+                                  this.value = value;
+                                });
+                              },
+                            );
+                          }
+                        },
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                        'Débito',
+                        style:
+                            TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                      ),
+                      Row(
+                        children: <Widget>[
+                          Flexible(
+                            child: FutureBuilder(
+                              future: concorrentes,
+                              builder: (context, snapshot) {
+                                if (snapshot.hasError) {
+                                  print(snapshot.error);
+                                  return Text("lista com erro");
+                                } else if (!snapshot.hasData) {
+                                  return Center(
+                                      child: CircularProgressIndicator());
+                                } else {
+                                  return TextField(
+                                    decoration: InputDecoration(
                                       border: OutlineInputBorder(),
                                       labelText: 'Taxa do concorrente *',
-                                      labelStyle: TextStyle(fontSize: 13)),
-                                  keyboardType: TextInputType.numberWithOptions(
-                                      decimal: true),
-                                  controller: controller_credito_concorrente
-                                    ..updateValue(
-                                        snapshot.data[value][ramo].credito),
-                                  enabled: false,
-                                );
-                              }
-                            },
+                                      labelStyle: TextStyle(fontSize: 13),
+                                    ),
+                                    keyboardType: TextInputType.numberWithOptions(
+                                        decimal: true),
+                                    controller: controller_debito_concorrente
+                                      ..updateValue(
+                                          snapshot.data[value][ramo].debito),
+                                    enabled: false,
+                                  );
+                                }
+                              },
+                            ),
                           ),
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Expanded(
-                          child: TextField(
-                            decoration: InputDecoration(
-                                border: OutlineInputBorder(),
-                                labelText: 'Desconto oferecido *',
-                                labelStyle: TextStyle(fontSize: 13)),
-                            keyboardType:
-                                TextInputType.numberWithOptions(decimal: true),
-                            controller: controller_credito_oferecido,
+                          SizedBox(
+                            width: 10,
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
+                          Flexible(
+                            child: TextField(
+                              decoration: InputDecoration(
+                                  border: OutlineInputBorder(),
+                                  labelText: 'Desconto oferecido *',
+                                  labelStyle: TextStyle(fontSize: 13)),
+                              keyboardType:
+                                  TextInputType.numberWithOptions(decimal: true),
+                              controller: controller_debito_oferecido,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                        'Crédito',
+                        style:
+                            TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                      ),
+                      Row(
+                        children: <Widget>[
+                          Flexible(
+                            child: FutureBuilder(
+                              future: concorrentes,
+                              builder: (context, snapshot) {
+                                if (snapshot.hasError) {
+                                  print(snapshot.error);
+                                  return Text("lista com erro");
+                                } else if (!snapshot.hasData) {
+                                  return Center(
+                                      child: CircularProgressIndicator());
+                                } else {
+                                  return TextField(
+                                    decoration: InputDecoration(
+                                        border: OutlineInputBorder(),
+                                        labelText: 'Taxa do concorrente *',
+                                        labelStyle: TextStyle(fontSize: 13)),
+                                    keyboardType: TextInputType.numberWithOptions(
+                                        decimal: true),
+                                    controller: controller_credito_concorrente
+                                      ..updateValue(
+                                          snapshot.data[value][ramo].credito),
+                                    enabled: false,
+                                  );
+                                }
+                              },
+                            ),
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Flexible(
+                            child: TextField(
+                              decoration: InputDecoration(
+                                  border: OutlineInputBorder(),
+                                  labelText: 'Desconto oferecido *',
+                                  labelStyle: TextStyle(fontSize: 13)),
+                              keyboardType:
+                                  TextInputType.numberWithOptions(decimal: true),
+                              controller: controller_credito_oferecido,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

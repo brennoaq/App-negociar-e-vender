@@ -59,114 +59,116 @@ class _State extends State<Nova_simulacao> {
                 padding: const EdgeInsets.all(10),
                 child: Form(
                   key: _formKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        'Dados do cliente',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 20),
-                      ),
-                      Text('Os campos obrigatórios estão sinalizados com *'),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Row(
-                        children: <Widget>[
-                          Expanded(
-                            child: TextFormField(
-                              decoration: InputDecoration(
-                                border: OutlineInputBorder(),
-                                labelText: 'CPF *',
-                              ),
-                              keyboardType: TextInputType.number,
-                              controller: controllerCPF,
-                              validator: (value) {
-                                final cpf = controllerCPF.text
-                                    .replaceAll(new RegExp(r'[-.]'), '');
-                                if (!CPFValidator.isValid(cpf)) {
-                                  return 'CPF inválido!';
-                                }
-                                return null;
-                              },
-                            ),
-                          ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Expanded(
-                            child: TextFormField(
-                              decoration: InputDecoration(
-                                border: OutlineInputBorder(),
-                                labelText: 'Telefone *',
-                              ),
-                              keyboardType: TextInputType.phone,
-                              controller: controllerPHONE,
-                              validator: (value) {
-                                String phone = controllerPHONE.text
-                                    .replaceAll(new RegExp(r'[-() ]'), '');
-                                final regExp = new RegExp(r"[0-9]{11}");
-                                if (!regExp.hasMatch(phone)) {
-                                  return 'Telefone inválido!';
-                                }
-                                return null;
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      TextFormField(
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: 'Email',
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          'Dados do cliente',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 20),
                         ),
-                        keyboardType: TextInputType.emailAddress,
-                        controller: controllerEmail,
-                        validator: (value) {
-                          final email = controllerEmail.text;
-                          final regExp = new RegExp(
-                              r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
-                          if (email.isNotEmpty && !regExp.hasMatch(email)) {
-                            return 'Email inválido!';
-                          }
-                          return null;
-                        },
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Text('Ramo de atividade *'),
-                      FutureBuilder(
-                        future: ramos,
-                        builder: (context, snapshot) {
-                          if (snapshot.hasError) {
-                            print(snapshot.error);
-                            return Text("lista com erro");
-                          } else if (!snapshot.hasData) {
-                            return Center(child: CircularProgressIndicator());
-                          } else {
-                            return DropdownButton(
-                              isExpanded: true,
-                              value: value,
-                              items: List<DropdownMenuItem>.generate(
-                                  snapshot.data.length,
-                                  (index) => DropdownMenuItem(
-                                        child: Text(snapshot.data[index]),
-                                        value: snapshot.data[index],
-                                      )),
-                              onChanged: (value) {
-                                setState(() {
-                                  this.value = value;
-                                });
-                              },
-                            );
-                          }
-                        },
-                      ),
-                    ],
+                        Text('Os campos obrigatórios estão sinalizados com *'),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Row(
+                          children: <Widget>[
+                            Flexible(
+                              child: TextFormField(
+                                decoration: InputDecoration(
+                                  border: OutlineInputBorder(),
+                                  labelText: 'CPF *',
+                                ),
+                                keyboardType: TextInputType.number,
+                                controller: controllerCPF,
+                                validator: (value) {
+                                  final cpf = controllerCPF.text
+                                      .replaceAll(new RegExp(r'[-.]'), '');
+                                  if (!CPFValidator.isValid(cpf)) {
+                                    return 'CPF inválido!';
+                                  }
+                                  return null;
+                                },
+                              ),
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Flexible(
+                              child: TextFormField(
+                                decoration: InputDecoration(
+                                  border: OutlineInputBorder(),
+                                  labelText: 'Telefone *',
+                                ),
+                                keyboardType: TextInputType.phone,
+                                controller: controllerPHONE,
+                                validator: (value) {
+                                  String phone = controllerPHONE.text
+                                      .replaceAll(new RegExp(r'[-() ]'), '');
+                                  final regExp = new RegExp(r"[0-9]{11}");
+                                  if (!regExp.hasMatch(phone)) {
+                                    return 'Telefone inválido!';
+                                  }
+                                  return null;
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        TextFormField(
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            labelText: 'Email',
+                          ),
+                          keyboardType: TextInputType.emailAddress,
+                          controller: controllerEmail,
+                          validator: (value) {
+                            final email = controllerEmail.text;
+                            final regExp = new RegExp(
+                                r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
+                            if (email.isNotEmpty && !regExp.hasMatch(email)) {
+                              return 'Email inválido!';
+                            }
+                            return null;
+                          },
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Text('Ramo de atividade *'),
+                        FutureBuilder(
+                          future: ramos,
+                          builder: (context, snapshot) {
+                            if (snapshot.hasError) {
+                              print(snapshot.error);
+                              return Text("lista com erro");
+                            } else if (!snapshot.hasData) {
+                              return Center(child: CircularProgressIndicator());
+                            } else {
+                              return DropdownButton(
+                                isExpanded: true,
+                                value: value,
+                                items: List<DropdownMenuItem>.generate(
+                                    snapshot.data.length,
+                                    (index) => DropdownMenuItem(
+                                          child: Text(snapshot.data[index]),
+                                          value: snapshot.data[index],
+                                        )),
+                                onChanged: (value) {
+                                  setState(() {
+                                    this.value = value;
+                                  });
+                                },
+                              );
+                            }
+                          },
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
