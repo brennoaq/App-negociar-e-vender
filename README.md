@@ -2,15 +2,11 @@
 
 A new Flutter application.
 
-## Getting Started
+## Informações
 
-This project is a starting point for a Flutter application.
+o App simula um sistema para o coletar os preços que um cliente possui no
+concorrente (taxas cobradas para as transações realizadas usando as maquinas de cartão), ofertar um desconto sobre
+este preço e calcular se estas condições pode ser propostas para ganhar o cliente. Ao final registrar se o cliente
+aceitou ou não as condições propostas.
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+o app expoe esses dados em um arquivo CSV.
