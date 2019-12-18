@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:negociar_e_vender/db_helper.dart';
+import 'package:negociar_e_vender/lista_propostas.dart';
 import 'package:negociar_e_vender/nova_simulacao.dart';
 
 void main() {
@@ -26,23 +27,26 @@ class _MyAppState extends State<MyApp> {
         child: Center(
           child: Column(
             children: <Widget>[
-              RaisedButton(
-                color: Colors.grey,
-                child: Container(
-                    width: double.infinity,
-                    height: 50,
-                    child: Center(
-                      child: Text(
-                        'Nova simulação',
-                        style: TextStyle(color: Colors.white, fontSize: 20),
-                      ),
-                    )),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => Nova_simulacao()),
-                  );
-                },
+              Hero(
+                tag: "effect",
+                child: RaisedButton(
+                  color: Colors.grey,
+                  child: Container(
+                      width: double.infinity,
+                      height: 50,
+                      child: Center(
+                        child: Text(
+                          'Nova simulação',
+                          style: TextStyle(color: Colors.white, fontSize: 20),
+                        ),
+                      )),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => Nova_simulacao()),
+                    );
+                  },
+                ),
               ),
               SizedBox(
                 height: 20,
@@ -56,7 +60,12 @@ class _MyAppState extends State<MyApp> {
                       'Visualizar propostas aceitas',
                       style: TextStyle(color: Colors.grey, fontSize: 20),
                     ))),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Lista_propostas()),
+                  );
+                },
                 borderSide: BorderSide(
                   color: Colors.grey, //Color of the border
                   style: BorderStyle.solid, //Style of the border

@@ -208,49 +208,57 @@ class _State extends State<Nova_simulacao3> {
 
   Widget getButtonsMin() {
     if (descontoDebito < minDebito || descontoCredito < minCredito) {
-      return GestureDetector(
-        child: Container(
-          width: double.infinity,
-          height: 50,
-          color: Colors.grey,
-          child: Center(
-            child: Text(
-              'Reajustar',
-              style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20),
-            ),
-          ),
-        ),
-        onTap: () {
-          Navigator.of(context).pop();
-        },
-      );
-    }
-    return Column(
-      children: <Widget>[
-        GestureDetector(
+      return Hero(
+        tag: "effect",
+        child: GestureDetector(
           child: Container(
             width: double.infinity,
             height: 50,
             color: Colors.grey,
             child: Center(
               child: Text(
-                'Proposta aceita',
+                'Reajustar',
                 style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
-                    fontSize: 20),
+                    fontSize: 20,
+                    decoration: TextDecoration.none),
               ),
             ),
           ),
-          onTap: () async {
-            await recordDb();
-
-            AlertDialogAceitarProposta(context, "Aceite do cliente",
-                "Resposta gravada no banco de dados!");
+          onTap: () {
+            Navigator.of(context).pop();
           },
+        ),
+      );
+    }
+    return Column(
+      children: <Widget>[
+        Hero(
+          tag: 'effect',
+          child: GestureDetector(
+            child: Container(
+              width: double.infinity,
+              height: 50,
+              color: Colors.grey,
+              child: Center(
+                child: Text(
+                  'Proposta aceita',
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                      decoration: TextDecoration.none),
+                ),
+              ),
+            ),
+            onTap: () async {
+              await recordDb();
+
+              AlertDialogAceitarProposta(context, "Aceite do cliente",
+                  "Resposta gravada no banco de dados!");
+            },
+          ),
         ),
         GestureDetector(
           child: Container(
@@ -282,7 +290,8 @@ class _State extends State<Nova_simulacao3> {
       DatabaseHelper.columnEmail: email,
       DatabaseHelper.columnPhone: phone,
       DatabaseHelper.columnRamo: ramo,
-      DatabaseHelper.columnTimestamp: DateTime.now().millisecondsSinceEpoch.toString(),
+      DatabaseHelper.columnTimestamp:
+          DateTime.now().millisecondsSinceEpoch.toString(),
       DatabaseHelper.columnConcorrente: concorrente,
       DatabaseHelper.columnTaxaConcorrenteDebito: debito,
       DatabaseHelper.columnTaxaConcorrenteCredito: credito,

@@ -50,3 +50,28 @@ class Concorrente {
     this.minDebito = map['minDebito'];
   }
 }
+
+class Proposta_aceita {
+  double debito;
+  double credito;
+  double descontoDebito;
+  double descontoCredito;
+  double porcentagemDebito;
+  double porcentagemCredito;
+  String ramo, cpf, phone, email, concorrente, timestamp;
+
+  Proposta_aceita(Map<String, dynamic> map) {
+    this.cpf = map['cpf'];
+    this.email = map['email'];
+    this.phone = map['phone'];
+    this.ramo = map['ramo'];
+    this.concorrente = map['concorrente'];
+    this.debito = map['debito'];
+    this.credito = map['credito'];
+    this.porcentagemDebito = map['porcentagemDebito'];
+    this.porcentagemCredito = map['porcentagemCredito'];
+    this.descontoDebito = map['descontoDebito'];
+    this.descontoCredito = map['descontoCredito'];
+    this.timestamp = map['timestamp'];
+  }
+}

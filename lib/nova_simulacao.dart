@@ -171,50 +171,57 @@ class _State extends State<Nova_simulacao> {
                 ),
               ),
             ),
-            GestureDetector(
-              child: Container(
-                height: 50,
-                color: Colors.grey,
-                child: Padding(
-                  padding: const EdgeInsets.all(15),
-                  child: Stack(
-                    children: <Widget>[
-                      Align(
-                        child: Text(
-                          'Próximo',
-                          style: TextStyle(color: Colors.white, fontSize: 20),
+            Hero(
+              tag: "effect",
+              child: GestureDetector(
+                child: Container(
+                  height: 50,
+                  color: Colors.grey,
+                  child: Padding(
+                    padding: const EdgeInsets.all(15),
+                    child: Stack(
+                      children: <Widget>[
+                        Align(
+                          child: Text(
+                            'Próximo',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                decoration: TextDecoration.none),
+                          ),
+                          alignment: Alignment.center,
                         ),
-                        alignment: Alignment.center,
-                      ),
-                      Align(
-                        child: Icon(
-                          Icons.arrow_forward_ios,
-                          size: 20,
-                          color: Colors.white,
-                        ),
-                        alignment: Alignment.centerRight,
-                      )
-                    ],
+                        Align(
+                          child: Icon(
+                            Icons.arrow_forward_ios,
+                            size: 20,
+                            color: Colors.white,
+                          ),
+                          alignment: Alignment.centerRight,
+                        )
+                      ],
+                    ),
                   ),
                 ),
+                onTap: () {
+                  if (_formKey.currentState.validate()) {
+                    String cpf =
+                        controllerCPF.text.replaceAll(new RegExp(r'[-.]'), '');
+                    String phone = controllerPHONE.text
+                        .replaceAll(new RegExp(r'[-() ]'), '');
+                    String email = controllerEmail.text.isEmpty
+                        ? null
+                        : controllerEmail.text;
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              Nova_simulacao2(value, cpf, phone, email)),
+                    );
+                  }
+                },
               ),
-              onTap: () {
-                if (_formKey.currentState.validate()) {
-                  String cpf =
-                      controllerCPF.text.replaceAll(new RegExp(r'[-.]'), '');
-                  String phone = controllerPHONE.text
-                      .replaceAll(new RegExp(r'[-() ]'), '');
-                  String email = controllerEmail.text.isEmpty
-                      ? null
-                      : controllerEmail.text;
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            Nova_simulacao2(value, cpf, phone, email)),
-                  );
-                }
-              },
             )
           ],
         ),
