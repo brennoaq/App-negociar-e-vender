@@ -26,6 +26,7 @@ dependencies:
   sqflite: ^1.2.0
   path_provider: ^1.5.1
   flutter_masked_text: ^0.8.0
+  cpf_cnpj_validator: ^1.0.5
 
 dev_dependencies:
   flutter_test:

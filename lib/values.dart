@@ -34,7 +34,6 @@ const concorrentes = [
 ];
 
 class Concorrente {
-
   String name;
   String ramo;
   double credito;
@@ -50,5 +49,4 @@ class Concorrente {
     this.minCredito = map['minCredito'];
     this.minDebito = map['minDebito'];
   }
-
 }

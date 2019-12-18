@@ -11,9 +11,22 @@ class DatabaseHelper {
 
   static final table = 'ramos';
   static final tableTaxas = 'taxas';
+  static final tablePropostas = 'propostas';
 
   static final columnId = 'id';
   static final columnName = 'name';
+  static final columnCPF = 'cpf';
+  static final columnEmail = 'email';
+  static final columnPhone = 'phone';
+  static final columnTimestamp = 'timestamp';
+  static final columnConcorrente = 'concorrente';
+  static final columnTaxaConcorrenteDebito = 'taxa_concorrente_debito';
+  static final columnTaxaConcorrenteCredito = 'taxa_concorrente_credito';
+  static final columnDescontoDebito = 'desconto_debito';
+  static final columnDescontoCredito = 'desconto_credito';
+  static final columnTaxaFinalDebito = 'taxa_final_debito';
+  static final columnTaxaFinalCredito = 'taxa_final_credito';
+
   static final columnRamo = 'ramo';
   static final columnDebito = 'debito';
   static final columnCredito = 'credito';
@@ -43,7 +56,7 @@ class DatabaseHelper {
     await db.execute('''
           CREATE TABLE $table (
             $columnId INTEGER PRIMARY KEY AUTOINCREMENT,
-            $columnName VARCHAR(255) NOT NULL
+            $columnName VARCHAR(255) NOT NULL,
           )
           ''');
     await db.execute('''
@@ -54,7 +67,24 @@ class DatabaseHelper {
             $columnDebito REAL NOT NULL,
             $columnCredito REAL NOT NULL,
             $columnMinCredito REAL NOT NULL,
-            $columnMinDebito REAL NOT NULL
+            $columnMinDebito REAL NOT NULL,
+          )
+          ''');
+    await db.execute('''
+          CREATE TABLE $tablePropostas (
+            $columnId INTEGER PRIMARY KEY AUTOINCREMENT,
+            $columnCPF VARCHAR(255) NOT NULL,
+            $columnEmail VARCHAR(255),
+            $columnPhone VARCHAR(255) NOT NULL,
+            $columnRamo VARCHAR(255) NOT NULL,
+            $columnTimestamp VARCHAR(255) NOT NULL,
+            $columnConcorrente VARCHAR(255) NOT NULL,
+            $columnTaxaConcorrenteDebito REAL NOT NULL,
+            $columnTaxaConcorrenteCredito REAL NOT NULL,
+            $columnDescontoDebito REAL NOT NULL,
+            $columnDescontoCredito REAL NOT NULL,
+            $columnTaxaFinalDebito REAL NOT NULL,
+            $columnTaxaFinalCredito REAL NOT NULL,
           )
           ''');
 
@@ -77,7 +107,12 @@ class DatabaseHelper {
 
   _populateRamos(Database db) async {
     for (final i in ramos_atividade) {
-      await insert(table, {'name': i}, db: db);
+      await insert(
+          table,
+          {
+            'name': i,
+          },
+          db: db);
     }
   }
 

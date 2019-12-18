@@ -6,12 +6,12 @@ import 'db_helper.dart';
 import 'nova_simulacao3.dart';
 
 class Nova_simulacao2 extends StatefulWidget {
-  String ramo;
+  String ramo, cpf, phone, email;
 
-  Nova_simulacao2(this.ramo);
+  Nova_simulacao2(this.ramo, this.cpf, this.phone, this.email);
 
   @override
-  _State createState() => _State(ramo);
+  _State createState() => _State(ramo, cpf, phone, email);
 }
 
 class _State extends State<Nova_simulacao2> {
@@ -21,11 +21,11 @@ class _State extends State<Nova_simulacao2> {
   MoneyMaskedTextController controller_credito_oferecido;
 
   String value;
-  String ramo;
+  String ramo, cpf, phone, email;
 
   Future<Map<String, Map<String, Concorrente>>> concorrentes;
 
-  _State(this.ramo);
+  _State(this.ramo, this.cpf, this.phone, this.email);
 
   @override
   void initState() {
@@ -292,6 +292,15 @@ class _State extends State<Nova_simulacao2> {
                                   descontoCredito: descontoCredito,
                                   minDebito: minDebito,
                                   minCredito: minCredito,
+                                  ramo: ramo,
+                                  cpf: cpf,
+                                  phone: phone,
+                                  email: email,
+                                  concorrente: value,
+                                  porcentagemDebito:
+                                      controller_debito_oferecido.numberValue,
+                                  porcentagemCredito:
+                                      controller_credito_oferecido.numberValue,
                                 )),
                       );
                     },

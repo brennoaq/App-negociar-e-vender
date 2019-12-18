@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:negociar_e_vender/main.dart';
-import 'package:negociar_e_vender/values.dart';
-import 'package:flutter_masked_text/flutter_masked_text.dart';
 
 import 'db_helper.dart';
 
@@ -12,6 +9,9 @@ class Nova_simulacao3 extends StatefulWidget {
   double descontoCredito;
   double minDebito;
   double minCredito;
+  double porcentagemDebito;
+  double porcentagemCredito;
+  String ramo, cpf, phone, email, concorrente;
 
   Nova_simulacao3({
     @required this.debito,
@@ -20,11 +20,31 @@ class Nova_simulacao3 extends StatefulWidget {
     @required this.descontoCredito,
     @required this.minDebito,
     @required this.minCredito,
+    @required this.ramo,
+    @required this.cpf,
+    @required this.phone,
+    @required this.email,
+    @required this.concorrente,
+    @required this.porcentagemDebito,
+    @required this.porcentagemCredito,
   });
 
   @override
   _State createState() => _State(
-      debito, credito, descontoDebito, descontoCredito, minDebito, minCredito);
+        debito: debito,
+        credito: credito,
+        descontoDebito: descontoDebito,
+        descontoCredito: descontoCredito,
+        minDebito: minDebito,
+        minCredito: minCredito,
+        ramo: ramo,
+        cpf: cpf,
+        phone: phone,
+        email: email,
+        concorrente: concorrente,
+        porcentagemDebito: porcentagemDebito,
+        porcentagemCredito: porcentagemCredito,
+      );
 }
 
 class _State extends State<Nova_simulacao3> {
@@ -34,9 +54,25 @@ class _State extends State<Nova_simulacao3> {
   double descontoCredito;
   double minDebito;
   double minCredito;
+  double porcentagemDebito;
+  double porcentagemCredito;
+  String ramo, cpf, phone, email, concorrente;
 
-  _State(this.debito, this.credito, this.descontoDebito, this.descontoCredito,
-      this.minDebito, this.minCredito);
+  _State({
+    @required this.debito,
+    @required this.credito,
+    @required this.descontoDebito,
+    @required this.descontoCredito,
+    @required this.minDebito,
+    @required this.minCredito,
+    @required this.ramo,
+    @required this.cpf,
+    @required this.phone,
+    @required this.email,
+    @required this.concorrente,
+    @required this.porcentagemDebito,
+    @required this.porcentagemCredito,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -209,8 +245,11 @@ class _State extends State<Nova_simulacao3> {
               ),
             ),
           ),
-          onTap: () {
-            AlertDialogAceitarProposta(context, "Aceite do cliente", "Resposta gravada no banco de dados!");
+          onTap: () async {
+            await recordDb();
+
+            AlertDialogAceitarProposta(context, "Aceite do cliente",
+                "Resposta gravada no banco de dados!");
           },
         ),
         GestureDetector(
@@ -229,11 +268,32 @@ class _State extends State<Nova_simulacao3> {
             ),
           ),
           onTap: () {
-            AlertDialogAceitarProposta(context, "Recusado", "A proposta foi recusada!");
+            AlertDialogAceitarProposta(
+                context, "Recusado", "A proposta foi recusada!");
           },
         ),
       ],
     );
+  }
+
+  Future recordDb() async {
+    final data = {
+      DatabaseHelper.columnCPF: cpf,
+      DatabaseHelper.columnEmail: email,
+      DatabaseHelper.columnPhone: phone,
+      DatabaseHelper.columnRamo: ramo,
+      DatabaseHelper.columnTimestamp: DateTime.now().millisecondsSinceEpoch.toString(),
+      DatabaseHelper.columnConcorrente: concorrente,
+      DatabaseHelper.columnTaxaConcorrenteDebito: debito,
+      DatabaseHelper.columnTaxaConcorrenteCredito: credito,
+      DatabaseHelper.columnDescontoDebito: porcentagemDebito,
+      DatabaseHelper.columnDescontoCredito: porcentagemCredito,
+      DatabaseHelper.columnTaxaFinalDebito: descontoDebito,
+      DatabaseHelper.columnTaxaFinalCredito: descontoCredito,
+    };
+
+    final db = DatabaseHelper.instance;
+    await db.insert(DatabaseHelper.tablePropostas, data);
   }
 }
 
